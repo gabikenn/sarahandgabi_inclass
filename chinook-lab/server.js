@@ -62,7 +62,7 @@ app.post('/playlists', (req, res) => {
 
     const stmt = db.prepare("INSERT INTO Playlist (Name) VALUES (?)");
     const result = stmt.run(name);
-    
+
     res.status(201).json({
         id: Number(result.lastInsertRowid),
         name: name,
@@ -70,3 +70,34 @@ app.post('/playlists', (req, res) => {
 
     res.json(stmt.run());
 });
+
+//Q6
+app.delete('/playlists/:id', (req, res) => {
+    let id = req.params.id;
+
+    const stmt = db.prepare(`
+        DELETE FROM Playlist WHERE Playlist.PlaylistId = ?;
+        
+        `);
+    const result = stmt.run(id);
+
+    if(result.changes === 0){
+        return res.status(401).json({error: "Playlist not found"});
+    }
+    else{
+        res.json({message: "Playlist deleted"});
+    }
+});
+
+//THIS IS TRYING TO HELP ME FIGURE OUT Q6
+//I know there are 18 playlists... so why col index out of bounds??? ;-;
+app.get('/playlist', (req, res) => {
+    const stmt = db.prepare(
+        "SELECT * FROM Playlist"
+    );
+    res.json(stmt.all());
+});
+
+
+
+
